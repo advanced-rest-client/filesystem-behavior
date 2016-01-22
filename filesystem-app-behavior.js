@@ -42,6 +42,10 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
     this._chooseEntry({
         type: 'saveFile'
       })
+      .catch(function(cause) {
+        // The only error here is that the user press cancel.
+        // In this case just do nothing.
+      }.bind(this))
       .then(this._truncate)
       .then(this._writeFileEntry)
       .then(function() {
@@ -76,8 +80,8 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
           return;
         }
         resolve(entry);
-      });
-    });
+      }.bind(this));
+    }.bind(this));
   }
 };
 

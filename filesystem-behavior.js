@@ -69,15 +69,15 @@ FileBehaviors.FilesystemBehavior = {
         let reader = new FileReader();
         reader.onloadend = function() {
           resolve(this.result);
-        };
+        }.bind(this);
         reader.onerror = function(error) {
           reject(error);
-        };
+        }.bind(this);
         reader.readAsText(file);
-      }, function(error) {
+      }.bind(this), function(error) {
         reject(error);
-      });
-    });
+      }.bind(this));
+    }.bind(this));
   },
   /**
    * After file read use `readAs` attribute and try to parse file content.
@@ -107,15 +107,15 @@ FileBehaviors.FilesystemBehavior = {
   _truncate: function(fileEntry) {
     return new Promise(function(resolve, reject) {
       fileEntry.createWriter(function(fileWriter) {
-        fileWriter.onwriteend = function() {
+        fileWriter.addEventListener('writeend', function() {
           resolve(fileEntry);
-        };
-        fileWriter.onerror = function(e) {
+        }.bind(this));
+        fileWriter.addEventListener('error', function(e) {
           reject(e);
-        };
+        }.bind(this));
         fileWriter.truncate(0);
-      }, reject);
-    });
+      }.bind(this), reject);
+    }.bind(this));
   },
   /**
    * Wrtite `content` to the file.
@@ -128,18 +128,18 @@ FileBehaviors.FilesystemBehavior = {
     var mime = this.mime;
     return new Promise(function(resolve, reject) {
       fileEntry.createWriter(function(fileWriter) {
-        fileWriter.onwriteend = function() {
+        fileWriter.addEventListener('writeend', function() {
           resolve(fileEntry);
-        };
-        fileWriter.onerror = function(e) {
+        }.bind(this));
+        fileWriter.addEventListener('error', function(e) {
           reject(e);
-        };
+        }.bind(this));
         let blob = new Blob(toWrite, {
           type: mime
         });
         fileWriter.write(blob);
-      }, reject);
-    });
+      }.bind(this), reject);
+    }.bind(this));
   },
   /**
    * Get a content to write to the file.
