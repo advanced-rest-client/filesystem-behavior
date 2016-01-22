@@ -26,8 +26,8 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
    */
   read: function() {
     this._chooseEntry()
-      .then(this._getContent)
-      .then(this._prepareContent)
+      .then(this._getContent.bind(this))
+      .then(this._prepareContent.bind(this))
       .then(function() {
         this.fire('file-read');
       }.bind(this))
