@@ -108,7 +108,7 @@ FileBehaviors.FilesystemBehavior = {
     return new Promise(function(resolve, reject) {
       fileEntry.createWriter(function(fileWriter) {
         fileWriter.onwriteend = function() {
-          resolve();
+          resolve(fileEntry);
         };
         fileWriter.onerror = function(e) {
           reject(e);

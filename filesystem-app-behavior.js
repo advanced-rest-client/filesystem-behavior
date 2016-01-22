@@ -69,8 +69,14 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
     if (typeof this.acceptsMultiple !== 'undefined') {
       opts.acceptsMultiple = this.acceptsMultiple;
     }
-    return new Promise(function(resolve) {
-      chrome.fileSystem.chooseEntry(opts, resolve);
+    return new Promise(function(resolve, reject) {
+      chrome.fileSystem.chooseEntry(opts, function(entry) {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
+        resolve(entry);
+      });
     });
   }
 };
