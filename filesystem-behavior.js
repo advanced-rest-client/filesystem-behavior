@@ -57,7 +57,7 @@ FileBehaviors.FilesystemBehavior = {
       type: String,
       value: 'text/pain'
     }
-  }
+  },
   /**
    * Get the file content from the entry.
    *
@@ -67,7 +67,7 @@ FileBehaviors.FilesystemBehavior = {
     return new Promise(function(resolve, reject) {
       fileEntry.file(function(file) {
         let reader = new FileReader();
-        reader.onloadend = function(e) {
+        reader.onloadend = function() {
           resolve(this.result);
         };
         reader.onerror = function(error) {
@@ -93,7 +93,6 @@ FileBehaviors.FilesystemBehavior = {
           console.warn('The content wasn\'t a JSON value.');
         }
         break;
-      case
       default:
         this.content = content;
         break;
@@ -108,7 +107,7 @@ FileBehaviors.FilesystemBehavior = {
   _truncate: function(fileEntry) {
     return new Promise(function(resolve, reject) {
       fileEntry.createWriter(function(fileWriter) {
-        fileWriter.onwriteend = function(e) {
+        fileWriter.onwriteend = function() {
           resolve();
         };
         fileWriter.onerror = function(e) {
@@ -129,7 +128,7 @@ FileBehaviors.FilesystemBehavior = {
     var mime = this.mime;
     return new Promise(function(resolve, reject) {
       fileEntry.createWriter(function(fileWriter) {
-        fileWriter.onwriteend = function(e) {
+        fileWriter.onwriteend = function() {
           resolve(fileEntry);
         };
         fileWriter.onerror = function(e) {
@@ -146,12 +145,11 @@ FileBehaviors.FilesystemBehavior = {
    * Get a content to write to the file.
    */
   _getWriteableContent: function() {
-    var content = "";
+    var content = '';
     switch (this.readAs) {
       case 'json':
         content = JSON.stringify(this.content);
         break;
-      case
       default:
         content = this.content;
         break;

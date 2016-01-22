@@ -20,39 +20,39 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
      * Whether to accept multiple files. This is only supported for openFile and openWritableFile.
      */
     acceptsMultiple: Boolean,
-  }
+  },
   /**
    * Read the file. Chrome API will be used to open a file.
    */
   read: function() {
     this._chooseEntry()
-    .then(this._getContent)
-    .then(this._prepareContent)
-    .then(function(){
-      this.fire('file-read');
-    }.bind(this))
-    .catch(function(cause){
-      this.fire('error', {
-        'cause': 'read',
-        'message': cause.message
-      });
-    }.bind(this))
+      .then(this._getContent)
+      .then(this._prepareContent)
+      .then(function() {
+        this.fire('file-read');
+      }.bind(this))
+      .catch(function(cause) {
+        this.fire('error', {
+          'cause': 'read',
+          'message': cause.message
+        });
+      }.bind(this));
   },
   write: function() {
     this._chooseEntry({
-      type: 'saveFile'
-    })
-    .then(this._truncate)
-    .then(this._writeFileEntry)
-    .then(function(){
-      this.fire('file-save');
-    }.bind(this))
-    .catch(function(cause){
-      this.fire('error', {
-        'cause': 'save',
-        'message': cause.message
-      });
-    }.bind(this))
+        type: 'saveFile'
+      })
+      .then(this._truncate)
+      .then(this._writeFileEntry)
+      .then(function() {
+        this.fire('file-save');
+      }.bind(this))
+      .catch(function(cause) {
+        this.fire('error', {
+          'cause': 'save',
+          'message': cause.message
+        });
+      }.bind(this));
   },
   /**
    * Open the file using file picker and Chrome api.
@@ -60,13 +60,13 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
    */
   _chooseEntry: function(opts) {
     opts = opts || {};
-    if(this.fileName) {
+    if (this.fileName) {
       opts.suggestedName = this.fileName;
     }
-    if(this.accepts) {
+    if (this.accepts) {
       opts.accepts = this.accepts;
     }
-    if(typeof this.acceptsMultiple !== 'undefined') {
+    if (typeof this.acceptsMultiple !== 'undefined') {
       opts.acceptsMultiple = this.acceptsMultiple;
     }
     return new Promise(function(resolve) {
