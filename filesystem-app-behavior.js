@@ -1,7 +1,11 @@
 'use strict';
 
 window.FileBehaviors = window.FileBehaviors || {};
-/** @polymerBehavior */
+/**
+ * A behavior to serve files from local filesystem using Chrome filesystem API.
+ *
+ * @polymerBehavior FilesystemAppBehavior
+ */
 FileBehaviors.FilesystemAppBehaviorImpl = {
   properties: {
     /**
@@ -12,6 +16,8 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
      * mimeTypes {Array<String>} Mime-types to accept, e.g. "image/jpeg" or "audio/*". One of
      *  mimeTypes or extensions must contain at least one valid element.
      * extensions {Array<String>} Extensions to accept, e.g. "jpg", "gif", "crx".
+     *
+     * @type {Array<String>}
      */
     accepts: {
       type: Array
@@ -21,47 +27,28 @@ FileBehaviors.FilesystemAppBehaviorImpl = {
      */
     acceptsMultiple: Boolean,
   },
+
   /**
-   * Read the file. Chrome API will be used to open a file.
+   * Write `this.content` to the file.
+   * A `file-write` event will be fired when ready.
    */
-  read: function() {
-    this._chooseEntry()
-      .then(this._getContent.bind(this))
-      .then(this._prepareContent.bind(this))
-      .then(function() {
-        this.fire('file-read');
-      }.bind(this))
-      .catch(function(cause) {
-        this.fire('error', {
-          'cause': 'read',
-          'message': cause.message
-        });
-      }.bind(this));
-  },
   write: function() {
-    this._chooseEntry({
+    this.getFile({
         type: 'saveFile'
       })
       .then(this._truncate.bind(this))
       .then(this._writeFileEntry.bind(this))
-      .then(function() {
-        this.fire('file-save');
-      }.bind(this))
-      .catch(function(cause) {
-        this.fire('error', {
-          'cause': 'save',
-          'message': cause.message
-        });
-      }.bind(this));
+      .then(() => this.fire('file-write'))
+      .catch((reason) => this.fire('error', reason));
   },
   /**
    * Open the file using file picker and Chrome api.
    * By default this will open a file in read only mode.
    */
-  _chooseEntry: function(opts) {
+  getFile: function(opts) {
     opts = opts || {};
-    if (this.fileName) {
-      opts.suggestedName = this.fileName;
+    if (this.filename) {
+      opts.suggestedName = this.filename;
     }
     if (this.accepts) {
       opts.accepts = this.accepts;

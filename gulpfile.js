@@ -23,7 +23,7 @@ gulp.task('lint', function() {
 });
 gulp.task('connect', function() {
   connect.server({
-    root: [__dirname + '/'],
+    root: [__dirname + '/', __dirname + '../'],
     livereload: true,
     port: 8888
   });

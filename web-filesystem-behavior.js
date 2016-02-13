@@ -2,15 +2,15 @@
 
 window.FileBehaviors = window.FileBehaviors || {};
 /**
- * A base behavior for web filesystem.
+ * A base behavior for web and sync filesystem.
  * FileSystem API becomes Chrome specific API since other vendors did not implemented it in
  * their browesers and is no longer being standardized with the W3C.
  *
  * This behavior is a base behavior for `local-` and `sync-` filesystem behaviors.
  *
- * @polymerBehavior
+ * @polymerBehavior WebFilesystemBehavior
  */
-FileBehaviors.WebFilesystemBehavior = {
+FileBehaviors.WebFilesystemBehaviorImpl = {
   /**
    * Fired when a filesystem is ready.
    *
@@ -24,24 +24,7 @@ FileBehaviors.WebFilesystemBehavior = {
    * @param {Number} quotaBytes Number of bytes granted by the filesystem.
    */
   /**
-   * Fired when error occured.
-   *
-   * @event error
-   * @param {Error} error An error object.
-   */
-  /**
-   * Fired when file has been read.
-   *
-   * @event file-read
-   * @param {String} content Content of the file.
-   */
-  /**
-   * Fired when the content has been written to the file.
-   *
-   * @event file-write
-   */
-  /**
-   * Fired when file has been read.
+   * Fired when directory has been read and entries are available.
    *
    * @event directory-read
    * @param {Array<FileEntry>} files List of files in a directory.
@@ -82,52 +65,33 @@ FileBehaviors.WebFilesystemBehavior = {
       notify: true
     },
     /**
-     * Name of the file.
-     *
-     * @type String
-     */
-    filename: {
-      type: String,
-      observer: '_filenameChanged'
-    },
-    /**
-     * If true the file will be read from the filesystem as soon as
-     * filename attribute change.
-     *
-     * @type Boolean
-     */
-    auto: {
-      type: Boolean,
-      value: false
-    },
-    /**
-     * A content of the file.
-     * If auto attribute is true it will write content to file each time
-     * it change.
-     *
-     * TODO: add support for other types than String.
-     *
-     * @type String|ArrayBuffer|Blob
-     */
-    content: {
-      type: Object,
-      notify: true,
-      observer: '_contentChanged'
-    },
-    /**
-     * File mime-type.
-     */
-    mime: {
-      type: String,
-      value: 'text/plain'
-    },
-    /**
      * A handler to the filesystem.
      * Call `element`.requestFilesystem() to request filesystem and set up the handler.
      */
     fileSystem: {
       type: Object,
       readOnly: true
+    }
+  },
+
+  observers: [
+    '_contentChanged(content, auto)',
+    '_filenameChanged(filename, auto)'
+  ],
+  /**
+   * If `auto` is set read the file when filename change.
+   */
+  _filenameChanged: function() {
+    if (this.auto && this.filename) {
+      this.read();
+    }
+  },
+  /**
+   * If `auto` is set write content to the file on content change.
+   */
+  _contentChanged: function() {
+    if (this.auto && this.filename) {
+      this.write();
     }
   },
   /**
@@ -156,7 +120,7 @@ FileBehaviors.WebFilesystemBehavior = {
     if (this.fileSystem) {
       return Promise.resolve();
     }
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       var onInit = function(fs) {
         this._setFileSystem(fs);
         resolve();
@@ -164,20 +128,15 @@ FileBehaviors.WebFilesystemBehavior = {
       var onError = function(e) {
         reject(e);
       };
-      navigator.webkitPersistentStorage.requestQuota(this.quota, function(grantedBytes) {
+      navigator.webkitPersistentStorage.requestQuota(this.quota, (grantedBytes) => {
         this._setGrantedQuota(grantedBytes);
         window.requestFileSystem(window.PERSISTENT, grantedBytes, onInit.bind(this), onError);
-      }.bind(this), onError);
-    }.bind(this));
+      }, onError);
+    });
   },
-
   /**
    * Returns the current usage and quota in bytes for the filesystem.
-   *
-   * @returns {Promise} Promise will result with filesystem status.
-   * Object will contain folowing keys:
-   *  - usageBytes (integer)
-   *  - quotaBytes (integer)
+   * A `filesystem-usage` event will be fired when ready.
    */
   getUsageAndQuota: function() {
     navigator.webkitPersistentStorage.queryUsageAndQuota(
@@ -222,146 +181,16 @@ FileBehaviors.WebFilesystemBehavior = {
     });
   },
   /**
-   * If `auto` is set read the file when filename change.
-   */
-  _filenameChanged: function() {
-    if (this.auto && this.filename) {
-      this.readFile();
-    }
-  },
-  /**
-   * If `auto` is set write content to the file on content change.
-   */
-  _contentChanged: function() {
-    if (this.auto && this.filename) {
-      this.writeFile();
-    }
-  },
-  /**
-   * Read file content.
-   * Result will be filled to `content` attribute.
-   */
-  read: function() {
-    this.readFile();
-  },
-  /**
    * Write `this.content` to the file.
    * A `file-write` event will be fired when ready.
    */
   write: function() {
-    this.writeFile();
-  },
-  /**
-   * Write `this.content` to the file.
-   */
-  writeFile: function() {
     this.getFile()
       .then(this._truncate.bind(this))
       .then(() => this.getFile())
       .then(this._writeFileEntry.bind(this))
       .then(() => this.fire('file-write'))
       .catch((reason) => this.fire('error', reason));
-  },
-  /**
-   * Read file contents.
-   * This function will trigger "file-read" event with file contents.
-   *
-   * Example:
-   *  <web-filesystem id="filesystem" file="names.json" on-file-read="{{onFileRead}}">
-   *  </web-filesystem>
-   *
-   *  this.$.filesystem.readFile();
-   *  //...
-   *  onFileRead: function(event, details){
-   *    //... details.content;
-   *  }
-   *
-   * @returns {Promise} The promise with {FileEntry} object.
-   */
-  readFile: function() {
-    this.getFile()
-      .then(this._readFileContents)
-      .then((result) => {
-        var auto = this.auto;
-        this.auto = false;
-        this.content = result;
-        this.async(() => {
-          this.auto = auto;
-        });
-        this.fire('file-read', {
-          content: result
-        });
-      })
-      .catch((reason) => {
-        this.fire('error', reason);
-      });
-  },
-  /**
-   * Read content of the file.
-   *
-   * @return {Promise} Fulfilled promise will result with file contents.
-   */
-  _readFileContents: function(fileEntry) {
-    return new Promise((resolve, reject) => {
-      fileEntry.file((file) => {
-        var reader = new FileReader();
-        reader.onloadend = function() {
-          resolve(this.result);
-        };
-        reader.onerror = function(error) {
-          reject(error);
-        };
-        reader.readAsText(file);
-      }, (error) => {
-        reject(error);
-      });
-    });
-  },
-  /**
-   * Truncate the file.
-   * Note that the file must be closed and re-opened to write to the file again.
-   *
-   * @return {Promise} Fulfilled promise when the file has been truncated.
-   */
-  _truncate: function(fileEntry) {
-    return new Promise(function(resolve, reject) {
-      fileEntry.createWriter(function(fileWriter) {
-        fileWriter.onwriteend = function() {
-          resolve();
-        };
-        fileWriter.onerror = function(e) {
-          reject(e);
-        };
-        fileWriter.truncate(0);
-      }, reject);
-    });
-  },
-  /**
-   * Write `this.content` to the file.
-   *
-   * @return {Promise} Fulfilled promise when the content has been written to the file.
-   */
-  _writeFileEntry: function(fileEntry) {
-    return new Promise((resolve, reject) => {
-      fileEntry.createWriter((fileWriter) => {
-        fileWriter.onwriteend = function() {
-          resolve(fileEntry);
-        };
-        fileWriter.onerror = function(e) {
-          reject(e);
-        };
-        var toWrite;
-        if (typeof this.content === 'string') {
-          toWrite = [this.content];
-        } else {
-          toWrite = this.content;
-        }
-        var blob = new Blob(toWrite, {
-          type: this.mime
-        });
-        fileWriter.write(blob);
-      }, reject);
-    });
   },
   /**
    * List files from root filesystem.
@@ -405,7 +234,7 @@ FileBehaviors.WebFilesystemBehavior = {
   },
 
   /**
-   * Remove the file identified by the this.filename.
+   * Remove the file identified by the `filename` attribute.
    * A `removed` event will be fired when the file has been deleted.
    */
   remove: function() {
@@ -426,3 +255,8 @@ FileBehaviors.WebFilesystemBehavior = {
       });
   }
 };
+
+FileBehaviors.WebFilesystemBehavior = [
+  FileBehaviors.FilesystemBehavior,
+  FileBehaviors.WebFilesystemBehaviorImpl
+];

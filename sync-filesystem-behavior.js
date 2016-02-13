@@ -50,7 +50,7 @@ FileBehaviors.SyncFilesystemBehaviorImpl = {
         });
       })
       .catch((reason) => {
-        this.fire('chrome-error', {
+        this.fire('error', {
           'message': reason
         });
       });
