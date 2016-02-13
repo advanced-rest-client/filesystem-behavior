@@ -1,4 +1,25 @@
 {
+  "name": "filesystem-behavior",
+  "version": "1.0.0",
+  "description": "A filesystem behavior for filesystem elements.",
+  "author": "Pawel Psztyc, The ARC team <jarrodek@gmail.com>",
+  "scripts": {
+		"lint": "gulp lint"
+	},
+  "repository": {
+		"type": "git",
+		"url": "git://github.com/jarrodek/filesystem-behavior.git"
+	},
+  "bugs": {
+		"url": "https://github.com/jarrodek/filesystem-behavior/issues"
+	},
+  "keywords": [
+		"web-components",
+    "polymer",
+    "files",
+    "filesystem",
+    "chrome"
+	],
   "private": false,
   "devDependencies": {
     "gulp": "^3.8.5",
@@ -11,10 +32,9 @@
     "gulp-load-plugins": "^1.1.0",
     "jshint-stylish": "^2.0.0"
   },
-  "scripts": {
-    "lint": "gulp lint"
-  },
   "engines": {
-    "node": ">=0.10.0"
-  }
+		"node": ">=0.10.0"
+	},
+	 "analyze": true,
+	 "license": "Apache 2.0"
 }

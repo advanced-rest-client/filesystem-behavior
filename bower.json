@@ -1,6 +1,6 @@
 {
   "name": "filesystem-behavior",
-  "version": "0.5.1",
+  "version": "1.0.0",
   "license": "LICENSE.txt",
   "description": "A filesystem behavior for filesystem elements.",
   "authors": [
@@ -11,22 +11,20 @@
     "web-components",
     "polymer",
     "files",
-    "filesystem"
+    "filesystem",
+    "chrome"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jarrodek/filesystem-app-behavior.git"
+    "url": "git://github.com/jarrodek/filesystem-behavior.git"
   },
   "dependencies": {
     "polymer": "Polymer/polymer#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "paper-styles": "PolymerElements/paper-styles#^1.0.4",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-    "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "paper-styles": "PolymerElements/paper-styles#^1.0.4"
   },
-  "main": "filesystem-app-behavior.html",
+  "main": "filesystem-behavior.html",
   "ignore": []
 }
