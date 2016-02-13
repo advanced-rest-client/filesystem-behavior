@@ -36,6 +36,11 @@ FileBehaviors.WebFilesystemBehavior = {
    * @param {String} content Content of the file.
    */
   /**
+   * Fired when the content has been written to the file.
+   *
+   * @event file-write
+   */
+  /**
    * Fired when file has been read.
    *
    * @event directory-read
