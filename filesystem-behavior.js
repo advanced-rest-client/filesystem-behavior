@@ -213,9 +213,14 @@ FileBehaviors.FilesystemBehavior = {
         fileWriter.addEventListener('error', function(e) {
           reject(e);
         });
-        let blob = new Blob(toWrite, {
-          type: this.mime
-        });
+        let blob;
+        if (toWrite instanceof Blob) {
+          blob = toWrite;
+        } else {
+          blob = new Blob(toWrite, {
+            type: this.mime
+          });
+        }
         fileWriter.write(blob);
       }, reject);
     });
