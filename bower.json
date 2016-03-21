@@ -1,6 +1,6 @@
 {
   "name": "filesystem-behavior",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "LICENSE.txt",
   "description": "A filesystem behavior for filesystem elements.",
   "authors": [
