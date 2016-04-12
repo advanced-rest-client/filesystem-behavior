@@ -1,6 +1,7 @@
 (function() {
   'use strict';
-
+  window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+  
   window.FileBehaviors = window.FileBehaviors || {};
   /**
    * A base behavior for web and sync filesystem.
