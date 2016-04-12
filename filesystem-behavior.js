@@ -208,6 +208,7 @@
       }
       return new Promise((resolve, reject) => {
         fileEntry.createWriter((fileWriter) => {
+          fileWriter.seek(fileWriter.length);
           fileWriter.addEventListener('writeend', function() {
             resolve(fileEntry);
           });
