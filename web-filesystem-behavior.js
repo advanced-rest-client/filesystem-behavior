@@ -193,6 +193,15 @@
         .then(() => this.fire('file-write'))
         .catch((reason) => this.fire('error', reason));
     },
+
+    // Appends current data to the end of file.
+    append: function() {
+      this.getFile()
+      .then(this._writeFileEntry.bind(this))
+      .then(() => this.fire('file-write'))
+      .catch((reason) => this.fire('error', reason));
+    },
+
     /**
      * List files from root filesystem.
      * A `directory-read` event will be fired when the directory has been read.
