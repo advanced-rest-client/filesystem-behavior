@@ -8,10 +8,10 @@
 	},
   "repository": {
 		"type": "git",
-		"url": "git://github.com/jarrodek/filesystem-behavior.git"
+		"url": "git://github.com/advanced-rest-client/filesystem-behavior.git"
 	},
   "bugs": {
-		"url": "https://github.com/jarrodek/filesystem-behavior/issues"
+		"url": "https://github.com/advanced-rest-client/filesystem-behavior/issues"
 	},
   "keywords": [
 		"web-components",
@@ -51,5 +51,11 @@
 		"node": ">=0.10.0"
 	},
 	 "analyze": true,
-	 "license": "Apache 2.0"
+	 "license": "Apache 2.0",
+   "main": [
+     "filesystem-behavior.html",
+     "filesystem-app-behavior.html",
+     "sync-filesystem-behavior.html",
+     "web-filesystem-behavior.html"
+   ]
 }

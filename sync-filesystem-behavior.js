@@ -5,7 +5,7 @@
   /**
    * Chrome syncable filesystem behavior.
    *
-   * @polymerBehavior SyncFilesystemBehavior
+   * @polymerBehavior FileBehaviors.SyncFilesystemBehavior
    */
   FileBehaviors.SyncFilesystemBehaviorImpl = {
     /**
@@ -35,8 +35,8 @@
     /**
      * Returns the current usage and quota in bytes for the filesystem.
      *
-     * @returns {Promise} Promise will result with filesystem status.
-     * Object will contain folowing keys:
+     * @return {Promise} Promise will result with filesystem status.
+     * The object contains the folowing keys:
      *  - usageBytes (integer)
      *  - quotaBytes (integer)
      */
@@ -59,12 +59,13 @@
     /**
      * Get a file from the storage.
      *
-     * Example:
+     * ### Example:
+     * ```
      *  <chrome-app-filesystem id="appFilesystem" file="names.json" syncable="true">
      *  </chrome-app-filesystem>
      *
      *  this.$.fileSystem.getFile().then(function(fileEntry){});
-     *
+     * ```
      * @returns {Promise} Fulfilled promise will result with {FileEntry} object.
      */
     getFile: function() {
@@ -91,7 +92,10 @@
     },
     /**
      * List files from root filesystem.
-     * A `directory-read` event will be fired when the directory has been read.
+     * A `directory-read` event will be fired when the directory has been read or `error` when
+     * there was an error when reading the directory.
+     *
+     * See `_listImpl()` of the `WebFilesystemBehavior` for more info.
      */
     list: function() {
       this._listImpl()
@@ -105,7 +109,9 @@
         });
     }
   };
-  window.FileBehaviors.SyncFilesystemBehavior = [
+
+  /** @polymerBehavior */
+  FileBehaviors.SyncFilesystemBehavior = [
     FileBehaviors.WebFilesystemBehavior,
     FileBehaviors.SyncFilesystemBehaviorImpl
   ];

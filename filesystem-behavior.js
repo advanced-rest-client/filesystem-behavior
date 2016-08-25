@@ -6,9 +6,9 @@
    * A base behavior for filesystem.
    * This behavior is a base behavior for `local-`, `sync-` and `web-` filesystem behaviors.
    *
-   * @polymerBehavior FilesystemBehavior
+   * @polymerBehavior FileBehaviors.FilesystemBehavior
    */
-  window.FileBehaviors.FilesystemBehavior = {
+  FileBehaviors.FilesystemBehavior = {
     /**
      * Fired when error occured.
      *

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-  
+
   window.FileBehaviors = window.FileBehaviors || {};
   /**
    * A base behavior for web and sync filesystem.
@@ -10,7 +10,7 @@
    *
    * This behavior is a base behavior for `local-` and `sync-` filesystem behaviors.
    *
-   * @polymerBehavior WebFilesystemBehavior
+   * @polymerBehavior FileBehaviors.WebFilesystemBehavior
    */
   FileBehaviors.WebFilesystemBehaviorImpl = {
     /**
@@ -89,7 +89,7 @@
       }
     },
     /**
-     * If `auto` is set write content to the file on content change.
+     * If `auto` is set write content to the file when it change.
      */
     _contentChanged: function() {
       if (this.auto && this.filename) {
@@ -98,6 +98,7 @@
     },
     /**
      * Request a filesystem.
+     * As a result the `filesystem-ready` event will be fired when ready.
      */
     requestFilesystem: function() {
       this._requestFilesystem()
@@ -158,12 +159,14 @@
     /**
      * Get a file from the storage.
      *
-     * Example:
+     * ### Example:
+     * ```
      *  <web-filesystem id="appFilesystem" file="names.json"></web-filesystem>
      *
      *  this.$.fileSystem.getFile().then(function(fileEntry){});
+     * ```
      *
-     * @returns {Promise} Fulfilled promise will result with {FileEntry} object.
+     * @return {Promise} Fulfilled promise will result with {FileEntry} object.
      */
     getFile: function() {
       return new Promise((resolve, reject) => {
@@ -267,7 +270,8 @@
     }
   };
 
-  window.FileBehaviors.WebFilesystemBehavior = [
+  /** @polymerBehavior  */
+  FileBehaviors.WebFilesystemBehavior = [
     FileBehaviors.FilesystemBehavior,
     FileBehaviors.WebFilesystemBehaviorImpl
   ];

@@ -5,7 +5,7 @@
   /**
    * A behavior to serve files from local filesystem using Chrome filesystem API.
    *
-   * @polymerBehavior FilesystemAppBehavior
+   * @polymerBehavior FileBehaviors.FilesystemAppBehavior
    */
   FileBehaviors.FilesystemAppBehaviorImpl = {
     properties: {
@@ -69,7 +69,8 @@
     }
   };
 
-  window.FileBehaviors.FilesystemAppBehavior = [
+  /** @polymerBehavior */
+  FileBehaviors.FilesystemAppBehavior = [
     FileBehaviors.FilesystemBehavior,
     FileBehaviors.FilesystemAppBehaviorImpl
   ];
