@@ -7,6 +7,7 @@
    * This behavior is a base behavior for `local-`, `sync-` and `web-` filesystem behaviors.
    *
    * @polymerBehavior FileBehaviors.FilesystemBehavior
+   * @hero hero.svg
    */
   FileBehaviors.FilesystemBehavior = {
     /**
