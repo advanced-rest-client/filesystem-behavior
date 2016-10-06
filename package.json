@@ -1,6 +1,6 @@
 {
   "name": "filesystem-behavior",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "A filesystem behavior for filesystem elements.",
   "author": "Pawel Psztyc, The ARC team <jarrodek@gmail.com>",
   "scripts": {
